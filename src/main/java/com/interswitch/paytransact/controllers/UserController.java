@@ -1,0 +1,29 @@
+package com.interswitch.paytransact.controllers;
+
+import com.interswitch.paytransact.dtos.SignupDto;
+import com.interswitch.paytransact.entities.commons.ApiResponse;
+import com.interswitch.paytransact.services.interfaces.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api")
+public class UserController {
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/user/info/{uid}")
+    ResponseEntity<ApiResponse> getUser(@PathVariable(name = "uid") Long uid) {
+        return new ResponseEntity<>(new ApiResponse(userService.getUser(uid)), HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    ResponseEntity<ApiResponse> register(@RequestBody SignupDto signUpDto) {
+        userService.register(signUpDto);
+        return new ResponseEntity<>(new ApiResponse("Registered successfully - proceed to login."), HttpStatus.CREATED);
+    }
+}
