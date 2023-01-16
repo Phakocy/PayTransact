@@ -27,14 +27,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUser(Long id) throws NotFoundException {
         Optional<User> user = userRepository.findUserById(id);
-        if (user.isEmpty()) throw new NotFoundException("Could not find user with ID " + id);
+        if (user.isEmpty()) throw new NotFoundException("could not find user with ID " + id);
         return user;
     }
 
     @Override
     public User loadUserByEmail(String email) throws NotFoundException {
         Optional<User> userRes = userRepository.findByEmail(email);
-        if (userRes.isEmpty()) throw new NotFoundException("Could not find user with email " + email);
+        if (userRes.isEmpty()) throw new NotFoundException("could not find user with email " + email);
         User user = userRes.get();
         return new User(email, user.getPassword());
     }
@@ -42,9 +42,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(SignupDto signUpDto) throws MainExceptions {
         if (StringUtils.isEmpty(signUpDto.getEmail()) || StringUtils.isEmpty(signUpDto.getPassword())) {
-            throw new MainExceptions("Email and password are required");
+            throw new MainExceptions("email and password are required");
         } else if (userRepository.existsByEmail(signUpDto.getEmail())) {
-            throw new MainExceptions("Account with email: " + signUpDto.getEmail() + " exists");
+            throw new MainExceptions("account with email: " + signUpDto.getEmail() + " exists");
         }
         User user = modelMapper.map(signUpDto, User.class);
         user.setDateCreated(new Date());

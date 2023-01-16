@@ -23,6 +23,9 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private HistoryServiceImp historyService;
+
     @Override
     public Account getAccount(AccountDto accountDto) {
         User userDetails = userRepository.findByEmail(accountDto.getEmail()).get();
@@ -42,12 +45,13 @@ public class AccountServiceImpl implements AccountService {
         if (accountRepository.existsAccountByUser_Id(userId)) {
             throw new MainExceptions("account already exists for this user");
         }
-        Account newProject = new Account();
-        newProject.setUser(userDetails.get());
-        newProject.setBalance(00.0);
-        newProject.setCardNumber(objGenerator.nextLong(9999999999999L));
-        newProject.setDateCreated(new Date());
+        Account newAccount = new Account();
+        newAccount.setUser(userDetails.get());
+        newAccount.setBalance(00.0);
+        newAccount.setCardNumber(objGenerator.nextLong(9999999999999L));
+        newAccount.setDateCreated(new Date());
 //        save account with user and account details
-        accountRepository.save(newProject);
+        accountRepository.save(newAccount);
+        historyService.logAccountHistory(newAccount, "new account created");
     }
 }
