@@ -21,6 +21,12 @@ public class Account extends BaseEntity {
             unique = true
     )
     private Long cardNumber;
+    @Column(
+            name = "account_number",
+            nullable = false,
+            unique = true
+    )
+    private Long accountNumber;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

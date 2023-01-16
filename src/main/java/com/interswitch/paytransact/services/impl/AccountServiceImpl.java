@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
 //        get user details from accountDto email
         Optional<User> userDetails = userRepository.findByEmail(accountDto.getEmail());
 
-//        initialize account with random account number and balance 0
+//        initialize account with random account number and card number and balance 0
         Random objGenerator = new Random();
         Long userId = userDetails.get().getId();
         if (accountRepository.existsAccountByUser_Id(userId)) {
@@ -49,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setUser(userDetails.get());
         newAccount.setBalance(00.0);
         newAccount.setCardNumber(objGenerator.nextLong(9999999999999L));
+        newAccount.setAccountNumber(objGenerator.nextLong(999999999999L));
         newAccount.setDateCreated(new Date());
 //        save account with user and account details
         accountRepository.save(newAccount);
