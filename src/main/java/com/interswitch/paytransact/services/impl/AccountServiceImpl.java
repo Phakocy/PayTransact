@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
+
 @Service
 public class AccountServiceImpl implements AccountService {
     @Autowired
@@ -24,7 +25,7 @@ public class AccountServiceImpl implements AccountService {
     private UserRepository userRepository;
 
     @Autowired
-    private HistoryServiceImp historyService;
+    private HistoryServiceImpl historyService;
 
     @Override
     public Account getAccount(AccountDto accountDto) {
@@ -35,16 +36,28 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account getAccountDetailsByCardNumber(Long cardNumber) throws MainExceptions, NotFoundException {
+        if (cardNumber == null) throw new MainExceptions("card number is required");
+        return accountRepository.getAccountByCardNumber(cardNumber).orElseThrow(() -> new NotFoundException("card number is not correct"));
+    }
+
+    @Override
+    public Account getAccountDetailsByAccountNumber(Long accountNumber) throws MainExceptions, NotFoundException {
+        if (accountNumber == null) throw new MainExceptions("account number is required");
+        return accountRepository.getAccountByAccountNumber(accountNumber).orElseThrow(() -> new NotFoundException("account number is not correct"));
+    }
+
+    @Override
     public void createNewAccount(AccountDto accountDto) throws MainExceptions {
 //        get user details from accountDto email
-        Optional<User> userDetails = userRepository.findByEmail(accountDto.getEmail());
+        Optional<User> userDetails = Optional.ofNullable(userRepository.findByEmail(accountDto.getEmail()).orElseThrow(() -> (new NotFoundException("could not find user with this email"))));
 
 //        initialize account with random account number and card number and balance 0
         Random objGenerator = new Random();
         Long userId = userDetails.get().getId();
-        if (accountRepository.existsAccountByUser_Id(userId)) {
+        if (accountRepository.existsAccountByUser_Id(userId))
             throw new MainExceptions("account already exists for this user");
-        }
+
         Account newAccount = new Account();
         newAccount.setUser(userDetails.get());
         newAccount.setBalance(00.0);

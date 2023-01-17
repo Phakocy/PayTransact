@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Entity
 @Getter
 @Setter
@@ -19,9 +17,9 @@ import java.math.BigDecimal;
 public class Transaction extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private TransactionStatus status;
-    private BigDecimal amount;
-    private BigDecimal balance;
-    private String reason;
+    private Double amount;
+    private Double balance;
+    private String narration;
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;

@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class HistoryServiceImp implements HistoryService {
+public class HistoryServiceImpl implements HistoryService {
     @Autowired
     private HistoryRepository historyRepository;
 

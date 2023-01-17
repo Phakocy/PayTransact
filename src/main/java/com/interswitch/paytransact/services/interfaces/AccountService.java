@@ -7,5 +7,9 @@ public interface AccountService {
 
     Account getAccount(AccountDto accountDto);
 
+    Account getAccountDetailsByCardNumber(Long cardNumber);
+
+    Account getAccountDetailsByAccountNumber(Long accountNumber);
+
     void createNewAccount(AccountDto email);
 }
