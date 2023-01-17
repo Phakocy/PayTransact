@@ -1,5 +1,6 @@
 package com.interswitch.paytransact.services.impl;
 
+import com.interswitch.paytransact.dtos.AccountDto;
 import com.interswitch.paytransact.dtos.PaymentDto;
 import com.interswitch.paytransact.entities.Account;
 import com.interswitch.paytransact.entities.Transaction;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -29,7 +31,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public void processTransaction(PaymentDto paymentDto) {
+    @Override
+    public void processTransaction(PaymentDto paymentDto) throws MainExceptions {
         Long cardNumber = paymentDto.getCardNumber();
         Long accountNumber = paymentDto.getAccountNumber();
         Double amount = paymentDto.getAmount();
@@ -38,47 +41,59 @@ public class TransactionServiceImpl implements TransactionService {
         if (cardNumber == null || accountNumber == null || amount == null || narration == null) {
             throw new MainExceptions("card number, account number, amount, and narration fields are required");
         }
+        ;
 
         Account senderAccount = accountService.getAccountDetailsByCardNumber(cardNumber);
         Account recipientAccount = accountService.getAccountDetailsByAccountNumber(accountNumber);
         Double senderBalance = senderAccount.getBalance();
 
-        Transaction transaction = new Transaction();
-        transaction.setAccount(senderAccount);
-        transaction.setBalance(senderBalance);
-        transaction.setAmount(amount);
-        transaction.setStatus(TransactionStatus.PENDING);
-        transaction.setNarration(narration);
-        transaction.setDateCreated(new Date());
-
-        Transaction transactionResult = transactionRepository.save(transaction);
-        Long transactionId = transactionResult.getId();
+        Long transactionId = generateTransaction(senderAccount, senderBalance, amount, TransactionStatus.PENDING, narration);
 
         if (amount > senderBalance) {
-            updateTransactionStatus(transactionId, TransactionStatus.DECLINED);
+            updateTransaction(transactionId, TransactionStatus.DECLINED, senderBalance);
             throw new MainExceptions("insufficient balance");
         }
 
         senderAccount.setBalance(senderBalance - amount);
         recipientAccount.setBalance(recipientAccount.getBalance() + amount);
-        accountRepository.save(senderAccount);
+        Account senderAccountResult = accountRepository.save(senderAccount);
         accountRepository.save(recipientAccount);
-//
+
         historyService.logAccountHistory(senderAccount, "you sent " + amount + " to " + recipientAccount.getAccountNumber());
         historyService.logAccountHistory(recipientAccount, senderAccount.getAccountNumber() + " just sent you " + amount);
 
-        updateTransactionStatus(transactionId, TransactionStatus.SUCCESS);
+        updateTransaction(transactionId, TransactionStatus.SUCCESS, senderAccountResult.getBalance());
     }
 
-    Optional<Transaction> getTransactionByTransactionId(Long transactionId) {
+    Long generateTransaction(Account account, Double balance, Double amount, TransactionStatus status, String narration) {
+        Transaction transaction = new Transaction();
+        transaction.setAccount(account);
+        transaction.setBalance(balance);
+        transaction.setAmount(amount);
+        transaction.setStatus(status);
+        transaction.setNarration(narration);
+        transaction.setDateCreated(new Date());
+
+        Transaction transactionResult = transactionRepository.save(transaction);
+        return transactionResult.getId();
+    }
+
+    Optional<Transaction> getTransactionByTransactionId(Long transactionId) throws NotFoundException {
         return Optional.ofNullable(transactionRepository.findTransactionById(transactionId).orElseThrow(() -> new NotFoundException("transaction not found with transaction id")));
     }
 
-    void updateTransactionStatus(Long transactionId, TransactionStatus status) {
+    void updateTransaction(Long transactionId, TransactionStatus status, Double balance) {
         Optional<Transaction> transactionUpdate = getTransactionByTransactionId(transactionId);
         transactionUpdate.ifPresent((Transaction transaction1) -> {
             transaction1.setStatus(status);
+            transaction1.setBalance(balance);
             transactionRepository.save(transaction1);
         });
+    }
+
+    @Override
+    public Optional<List<Transaction>> getTransactionListByAccount(AccountDto accountDto) throws NotFoundException {
+        Account account = accountService.getAccountByUserEmail(accountDto);
+        return Optional.ofNullable(transactionRepository.findTransactionsByAccountId(account.getId()).orElseThrow(() -> new NotFoundException("transaction list not found with this account")));
     }
 }

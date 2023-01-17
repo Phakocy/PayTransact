@@ -22,7 +22,7 @@ public class AccountController {
 
     @GetMapping("")
     ResponseEntity<ApiResponse> getAccount(@RequestBody AccountDto accountDto) {
-        return new ResponseEntity<>(new ApiResponse(accountService.getAccount(accountDto), "account details fetched successfully"), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse(accountService.getAccountByUserEmail(accountDto), "account details fetched successfully"), HttpStatus.OK);
     }
 
     @PostMapping("/create")
@@ -32,8 +32,8 @@ public class AccountController {
     }
 
     @GetMapping("/history")
-    ResponseEntity<ApiResponse> getAccountHistory() {
-        List<History> historyList = historyService.getAccountHistory();
-        return new ResponseEntity<>(new ApiResponse(historyList, "Fetched list of account's history"), HttpStatus.OK);
+    ResponseEntity<ApiResponse> getAccountHistory(@RequestBody AccountDto accountDto) {
+        List<History> historyList = historyService.getAccountHistory(accountDto);
+        return new ResponseEntity<>(new ApiResponse(historyList, "fetched list of account's history"), HttpStatus.OK);
     }
 }

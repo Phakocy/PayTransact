@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private  ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Override
     public Optional<User> getUser(Long id) throws NotFoundException {
@@ -33,10 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User loadUserByEmail(String email) throws NotFoundException {
-        Optional<User> userRes = userRepository.findByEmail(email);
-        if (userRes.isEmpty()) throw new NotFoundException("could not find user with email " + email);
-        User user = userRes.get();
-        return new User(email, user.getPassword());
+        Optional<User> userDetails = Optional.ofNullable(userRepository.findByEmail(email).orElseThrow(() -> (new NotFoundException("could not find user with this email"))));
+        return userDetails.get();
     }
 
     @Override

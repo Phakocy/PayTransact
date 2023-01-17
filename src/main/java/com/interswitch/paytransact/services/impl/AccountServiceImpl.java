@@ -6,13 +6,12 @@ import com.interswitch.paytransact.entities.User;
 import com.interswitch.paytransact.exceptions.MainExceptions;
 import com.interswitch.paytransact.exceptions.NotFoundException;
 import com.interswitch.paytransact.repos.AccountRepository;
-import com.interswitch.paytransact.repos.UserRepository;
 import com.interswitch.paytransact.services.interfaces.AccountService;
+import com.interswitch.paytransact.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.Random;
 
 
@@ -22,15 +21,15 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private HistoryServiceImpl historyService;
 
     @Override
-    public Account getAccount(AccountDto accountDto) {
-        User userDetails = userRepository.findByEmail(accountDto.getEmail()).get();
-        Account account = accountRepository.getAccountById(userDetails.getId());
+    public Account getAccountByUserEmail(AccountDto accountDto) {
+        User userDetails = userService.loadUserByEmail(accountDto.getEmail());
+        Account account = accountRepository.getAccountByUserId(userDetails.getId());
         if (account == null) throw new NotFoundException("account not created for this user");
         return account;
     }
@@ -49,23 +48,27 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void createNewAccount(AccountDto accountDto) throws MainExceptions {
-//        get user details from accountDto email
-        Optional<User> userDetails = Optional.ofNullable(userRepository.findByEmail(accountDto.getEmail()).orElseThrow(() -> (new NotFoundException("could not find user with this email"))));
-
-//        initialize account with random account number and card number and balance 0
-        Random objGenerator = new Random();
-        Long userId = userDetails.get().getId();
-        if (accountRepository.existsAccountByUser_Id(userId))
+        if (accountRepository.existsAccountByUser_Id(userService.loadUserByEmail(accountDto.getEmail()).getId()))
             throw new MainExceptions("account already exists for this user");
 
+        handleNewAccountCreation(accountDto);
+    }
+
+    void handleNewAccountCreation(AccountDto accountDto) {
+        //        initialize account with random account number and card number and set balance 0
+        Random objGenerator = new Random();
+
         Account newAccount = new Account();
-        newAccount.setUser(userDetails.get());
+        newAccount.setUser(userService.loadUserByEmail(accountDto.getEmail()));
         newAccount.setBalance(00.0);
         newAccount.setCardNumber(objGenerator.nextLong(9999999999999L));
         newAccount.setAccountNumber(objGenerator.nextLong(999999999999L));
         newAccount.setDateCreated(new Date());
-//        save account with user and account details
+
+//        save account with user and account details and log account history
         accountRepository.save(newAccount);
         historyService.logAccountHistory(newAccount, "new account created");
     }
 }
+
+

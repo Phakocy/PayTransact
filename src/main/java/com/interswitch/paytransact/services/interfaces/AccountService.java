@@ -5,7 +5,7 @@ import com.interswitch.paytransact.entities.Account;
 
 public interface AccountService {
 
-    Account getAccount(AccountDto accountDto);
+    Account getAccountByUserEmail(AccountDto accountDto);
 
     Account getAccountDetailsByCardNumber(Long cardNumber);
 
