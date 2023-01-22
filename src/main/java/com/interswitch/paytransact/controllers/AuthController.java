@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("api")
 public class AuthController {
     private final UserService userService;
 
@@ -19,7 +19,7 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("authenticate")
     ResponseEntity<ApiResponse> authenticate(@RequestBody LoginDto loginDto){
 
         return new ResponseEntity<>(new ApiResponse(""), HttpStatus.OK);

@@ -14,18 +14,18 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("api")
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-    @PostMapping("/transfer")
+    @PostMapping("transfer")
     ResponseEntity<ApiResponse> processTransaction(@RequestBody PaymentDto paymentDto) {
         transactionService.processTransaction(paymentDto);
         return new ResponseEntity<>(new ApiResponse("you have successfully transferred " + paymentDto.getAmount() + " to " + paymentDto.getAccountNumber()), HttpStatus.OK);
     }
 
-    @GetMapping("/transactions")
+    @GetMapping("transactions")
     ResponseEntity<ApiResponse> getTransactions(@RequestBody AccountDto accountDto) {
         Optional<List<Transaction>> transactionList = transactionService.getTransactionListByAccount(accountDto);
         return new ResponseEntity<>(new ApiResponse(transactionList, "fetched list of transactions successfully"), HttpStatus.OK);

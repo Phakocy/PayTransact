@@ -9,17 +9,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("api")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/user/info/{uid}")
+    @GetMapping("user/info/{uid}")
     ResponseEntity<ApiResponse> getUser(@PathVariable(name = "uid") Long uid) {
         return new ResponseEntity<>(new ApiResponse(userService.getUser(uid)), HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     ResponseEntity<ApiResponse> register(@RequestBody SignupDto signUpDto) {
         userService.register(signUpDto);
         return new ResponseEntity<>(new ApiResponse("registered successfully - proceed to login."), HttpStatus.CREATED);

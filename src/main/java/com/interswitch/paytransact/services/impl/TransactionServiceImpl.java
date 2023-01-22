@@ -38,10 +38,11 @@ public class TransactionServiceImpl implements TransactionService {
         Double amount = paymentDto.getAmount();
         String narration = paymentDto.getNarration();
 
-        if (cardNumber == null || accountNumber == null || amount == null || narration == null) {
+        if (cardNumber == null || accountNumber == null || amount == null || narration == null || narration.isEmpty()) {
             throw new MainExceptions("card number, account number, amount, and narration fields are required");
+        } else if (amount < 10) {
+            throw new MainExceptions("can not transfer amounts less than 10.00");
         }
-        ;
 
         Account senderAccount = accountService.getAccountDetailsByCardNumber(cardNumber);
         Account recipientAccount = accountService.getAccountDetailsByAccountNumber(accountNumber);

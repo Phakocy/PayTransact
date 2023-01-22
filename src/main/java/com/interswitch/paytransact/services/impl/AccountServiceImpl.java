@@ -27,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
     private HistoryServiceImpl historyService;
 
     @Override
-    public Account getAccountByUserEmail(AccountDto accountDto) {
+    public Account getAccountByUserEmail(AccountDto accountDto) throws NotFoundException {
         User userDetails = userService.loadUserByEmail(accountDto.getEmail());
         Account account = accountRepository.getAccountByUserId(userDetails.getId());
         if (account == null) throw new NotFoundException("account not created for this user");
@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     void handleNewAccountCreation(AccountDto accountDto) {
-        //        initialize account with random account number and card number and set balance 0
+//        initialize account with random account number and card number and set balance 0
         Random objGenerator = new Random();
 
         Account newAccount = new Account();
