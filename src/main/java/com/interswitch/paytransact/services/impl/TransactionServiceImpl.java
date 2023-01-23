@@ -13,6 +13,7 @@ import com.interswitch.paytransact.services.interfaces.AccountService;
 import com.interswitch.paytransact.services.interfaces.HistoryService;
 import com.interswitch.paytransact.services.interfaces.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+    private static final String TOPIC = "Transaction_Topic";
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -30,6 +32,8 @@ public class TransactionServiceImpl implements TransactionService {
     private HistoryService historyService;
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private KafkaTemplate<String, Transaction> kafkaTemplate;
 
     @Override
     public void processTransaction(PaymentDto paymentDto) throws MainExceptions {
@@ -88,6 +92,9 @@ public class TransactionServiceImpl implements TransactionService {
         transactionUpdate.ifPresent((Transaction transaction1) -> {
             transaction1.setStatus(status);
             transaction1.setBalance(balance);
+            //        SEND PAYMENT NOTIFICATION TO KAFKA
+            kafkaTemplate.send(TOPIC, transaction1);
+
             transactionRepository.save(transaction1);
         });
     }
