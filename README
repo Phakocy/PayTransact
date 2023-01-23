@@ -7,6 +7,7 @@ PayTransact is a web application service to process transactions completely in J
 - [Dependencies](#dependencies)
 - [Plugins](#plugins)
 - [Setting Up on your Local](#setting-up-on-your-local)
+- [Links](#links)
 - [Licenses](#licenses)
 
 ## Getting Started :
@@ -50,9 +51,7 @@ This repository is a monorepo containing the following packages:
 - [`Spring Boot Starter Test`](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test)
 - [`Lombok`](https://mvnrepository.com/artifact/org.projectlombok/lombok)
 - [`ModelMapper`](https://mvnrepository.com/artifact/org.modelmapper/modelmapper) v2.3.9
-
-## Plugins
-- [`Spring Boot Maven Plugin`](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-maven-plugin)
+- [`Spring Kafka Support`](https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka)
 
 
 ## Setting Up on your Local :
@@ -60,6 +59,10 @@ This repository is a monorepo containing the following packages:
 - Having Issues with connecting MSSQL Server to your Spring-Boot application? [check out this gist](https://gist.github.com/Ifejeremiah/0dacda0c741c3947421f1dd8cb154762) .
 - Update the `application.properties` file from path `src\main\resources\application.properties` with your application properties.
 - All packages are in path `src\main\java\com\interswitch\paytransact`.
+
+## Links
+Refer to this readme on directions on **setting up and connecting** kafka locally.
+[`spring-boot-kafka`](https://github.com/rahul-ghadge/spring-boot-kafka#spring-boot-kafka)
 
 ## Licenses :
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
