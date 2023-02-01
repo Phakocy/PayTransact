@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
         } else if (userRepository.existsByEmail(signUpDto.getEmail())) {
             throw new MainExceptions("account with email: " + signUpDto.getEmail() + " exists");
         }
+
         User user = modelMapper.map(signUpDto, User.class);
         user.setDateCreated(new Date());
         userRepository.save(user);
