@@ -1,5 +1,6 @@
 package com.interswitch.paytransact.services.impl;
 
+import com.interswitch.paytransact.daos.interfaces.UserDao;
 import com.interswitch.paytransact.dtos.SignupDto;
 import com.interswitch.paytransact.entities.User;
 import com.interswitch.paytransact.exceptions.MainExceptions;
@@ -24,10 +25,15 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private UserDao userDao;
+
     @Override
     public Optional<User> getUser(Long id) throws NotFoundException {
         Optional<User> user = userRepository.findUserById(id);
         if (user.isEmpty()) throw new NotFoundException("could not find user with ID " + id);
+
+        userDao.findByEmail(user.get().getEmail());
         return user;
     }
 

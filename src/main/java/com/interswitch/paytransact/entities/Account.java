@@ -15,19 +15,19 @@ import lombok.Setter;
 @Table(name = "Accounts")
 public class Account extends BaseEntity {
     private Double balance;
-    @Column(
+        @Column(
             name = "card_number",
             nullable = false,
             unique = true
     )
     private Long cardNumber;
-    @Column(
+        @Column(
             name = "account_number",
             nullable = false,
             unique = true
     )
     private Long accountNumber;
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+        @OneToOne
+        @JoinColumn(name = "user_id")
+        private User user;
 }
