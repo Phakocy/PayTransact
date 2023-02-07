@@ -64,8 +64,8 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccountResult = accountRepository.save(senderAccount);
         accountRepository.save(recipientAccount);
 
-        historyService.logAccountHistory(senderAccount, "you sent " + amount + " to " + recipientAccount.getAccountNumber());
-        historyService.logAccountHistory(recipientAccount, senderAccount.getAccountNumber() + " just sent you " + amount);
+//        historyService.logAccountHistory(senderAccount, "you sent " + amount + " to " + recipientAccount.getAccountNumber());
+//        historyService.logAccountHistory(recipientAccount, senderAccount.getAccountNumber() + " just sent you " + amount);
 
         updateTransaction(transactionId, TransactionStatus.SUCCESS, senderAccountResult.getBalance());
     }

@@ -31,7 +31,7 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountByUserEmail(AccountDto accountDto) throws NotFoundException {
         User userDetails = userService.loadUserByEmail(accountDto.getEmail());
         Account account = accountDao.getAccountByUserId(userDetails.getId());
-        if (account == null) throw new NotFoundException("account not created for this user");
+        if (account.getAccountNumber() == null) throw new NotFoundException("account not created for this user");
         return account;
     }
 
@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountDetailsByCardNumber(Long cardNumber) throws MainExceptions, NotFoundException {
         if (cardNumber == null) throw new MainExceptions("card number is required");
         Account account = accountDao.getAccountByCardNumber(cardNumber);
-        if (account == null) throw new NotFoundException("card number is not correct");
+        if (account.getCardNumber() == null) throw new NotFoundException("card number is not correct");
         return account;
     }
 
@@ -47,17 +47,15 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountDetailsByAccountNumber(Long accountNumber) throws MainExceptions, NotFoundException {
         if (accountNumber == null) throw new MainExceptions("account number is required");
         Account account = accountDao.getAccountByAccountNumber(accountNumber);
-        if (account == null) throw new NotFoundException("account number is not correct");
+        if (account.getAccountNumber() == null) throw new NotFoundException("account number is not correct");
         return account;
     }
 
     @Override
     public void createNewAccount(AccountDto accountDto) throws MainExceptions {
         User user = userService.loadUserByEmail(accountDto.getEmail());
-        System.out.println("boolean value ================>>" + accountDao.existsAccountByUserId(user.getId()));
-        if (accountDao.existsAccountByUserId(user.getId())) {
+        if (accountDao.existsAccountByUserId(user.getId()))
             throw new MainExceptions("account already exists for this user");
-        }
         handleNewAccountCreation(accountDto);
     }
 
@@ -72,9 +70,11 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setAccountNumber(objGenerator.nextLong(999999999999L));
         newAccount.setDateCreated(new Date());
 
-//        save account with user and account details and log account history
+//        save account with user and account details
         accountDao.create(newAccount);
-//        historyService.logAccountHistory(newAccount, "new account created");
+
+//        log account creation into history table
+        historyService.logAccountHistory(newAccount.getId(), "new account created");
     }
 }
 

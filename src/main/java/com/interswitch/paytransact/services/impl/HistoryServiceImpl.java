@@ -1,8 +1,7 @@
 package com.interswitch.paytransact.services.impl;
 
-import com.interswitch.paytransact.entities.Account;
+import com.interswitch.paytransact.daos.interfaces.HistoryDao;
 import com.interswitch.paytransact.entities.History;
-import com.interswitch.paytransact.repos.HistoryRepository;
 import com.interswitch.paytransact.services.interfaces.HistoryService;
 import com.interswitch.paytransact.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +12,20 @@ import java.util.Date;
 @Service
 public class HistoryServiceImpl implements HistoryService {
     @Autowired
-    private HistoryRepository historyRepository;
-    @Autowired
     private UserService userService;
 
+    private HistoryDao historyDao;
+
     @Override
-    public void logAccountHistory(Account account, String body) {
+    public void logAccountHistory(Integer account, String body) {
         History history = new History();
         history.setBody(body);
         history.setAccount(account);
         history.setDateCreated(new Date());
-        historyRepository.save(history);
+
+        historyDao.create(history);
+
+//        historyRepository.save(history);
     }
 
 //    @Override
