@@ -5,16 +5,19 @@ IF NOT EXISTS(
           AND type IN (N'U')
     )
     BEGIN
-        CREATE TABLE paytransact.dbo.accounts
+        CREATE TABLE [paytransact].[dbo].[accounts]
         (
-            id             int PRIMARY KEY IDENTITY (101, 1),
-            date_created   datetime,
+            id             INT PRIMARY KEY IDENTITY (101, 1),
+            date_created   DATETIME,
 
-            balance        int NOT NULL,
-            card_number    int NOT NULL,
-            account_number int NOT NULL,
-            user_id        int NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES paytransact.dbo.users ON DELETE CASCADE ON UPDATE CASCADE,
+            balance        FLOAT NOT NULL,
+            card_number    BIGINT NOT NULL UNIQUE,
+            account_number BIGINT NOT NULL UNIQUE,
+            user_id        BIGINT NOT NULL UNIQUE,
+
+            CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES dbo.users (id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE,
         )
     END
 GO

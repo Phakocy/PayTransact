@@ -52,7 +52,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account recipientAccount = accountService.getAccountDetailsByAccountNumber(accountNumber);
         Double senderBalance = senderAccount.getBalance();
 
-        Long transactionId = generateTransaction(senderAccount, senderBalance, amount, TransactionStatus.PENDING, narration);
+        Integer transactionId = generateTransaction(senderAccount, senderBalance, amount, TransactionStatus.PENDING, narration);
 
         if (amount > senderBalance) {
             updateTransaction(transactionId, TransactionStatus.DECLINED, senderBalance);
@@ -70,7 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
         updateTransaction(transactionId, TransactionStatus.SUCCESS, senderAccountResult.getBalance());
     }
 
-    Long generateTransaction(Account account, Double balance, Double amount, TransactionStatus status, String narration) {
+    Integer generateTransaction(Account account, Double balance, Double amount, TransactionStatus status, String narration) {
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
         transaction.setBalance(balance);
@@ -83,11 +83,11 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionResult.getId();
     }
 
-    Optional<Transaction> getTransactionByTransactionId(Long transactionId) throws NotFoundException {
+    Optional<Transaction> getTransactionByTransactionId(Integer transactionId) throws NotFoundException {
         return Optional.ofNullable(transactionRepository.findTransactionById(transactionId).orElseThrow(() -> new NotFoundException("transaction not found with transaction id")));
     }
 
-    void updateTransaction(Long transactionId, TransactionStatus status, Double balance) {
+    void updateTransaction(Integer transactionId, TransactionStatus status, Double balance) {
         Optional<Transaction> transactionUpdate = getTransactionByTransactionId(transactionId);
         transactionUpdate.ifPresent((Transaction transaction1) -> {
             transaction1.setStatus(status);

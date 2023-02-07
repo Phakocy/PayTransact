@@ -15,8 +15,8 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("user/info/{uid}")
-    ResponseEntity<ApiResponse> getUser(@PathVariable(name = "uid") Long uid) {
-        return new ResponseEntity<>(new ApiResponse(userService.getUser(uid)), HttpStatus.OK);
+    ResponseEntity<ApiResponse> getUser(@PathVariable(name = "uid") Integer userId) {
+        return new ResponseEntity<>(new ApiResponse(userService.getUser(userId)), HttpStatus.OK);
     }
 
     @PostMapping("register")

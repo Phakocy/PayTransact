@@ -1,11 +1,11 @@
 IF EXISTS(SELECT *
           FROM sys.objects
-          WHERE object_id = OBJECT_ID(N'find_user_by_email')
+          WHERE object_id = OBJECT_ID(N'find_user_by_id')
             AND type IN (N'P', N'PC'))
-    DROP PROCEDURE find_user_by_email
+    DROP PROCEDURE find_user_by_id
 GO
 
-CREATE PROCEDURE [dbo].[find_user_by_email] @_email VARCHAR(200),
+CREATE PROCEDURE [dbo].[find_user_by_id] @_id INT,
                                             @id INT OUTPUT,
                                             @email VARCHAR(200) OUTPUT,
                                             @date_created DATETIME OUTPUT
@@ -15,7 +15,7 @@ BEGIN
 
     SELECT @id = id, @email = email, @date_created = date_created
     FROM [dbo].[users] (NOLOCK)
-    WHERE email = @_email
+    WHERE id = @_id
 
 END
 GO
