@@ -13,7 +13,7 @@ IF NOT EXISTS(
             balance        FLOAT NOT NULL,
             card_number    BIGINT NOT NULL UNIQUE,
             account_number BIGINT NOT NULL UNIQUE,
-            user_id        BIGINT NOT NULL UNIQUE,
+            user_id        INT NOT NULL UNIQUE,
 
             CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES dbo.users (id)
                 ON DELETE CASCADE

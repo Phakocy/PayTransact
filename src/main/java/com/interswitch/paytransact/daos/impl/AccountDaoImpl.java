@@ -78,7 +78,8 @@ public class AccountDaoImpl implements AccountDao {
     @Override
     public boolean existsAccountByUserId(Integer userid) {
         Account account = getAccountByUserId(userid);
-add        return account.getId() != null;
+        return account.getAccountNumber() != null
+                && account.getCardNumber() != null;
     }
 
     private Account setAccountObject(Map<String, Object> out) {
