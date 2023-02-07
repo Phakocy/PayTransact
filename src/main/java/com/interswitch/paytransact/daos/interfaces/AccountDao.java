@@ -6,6 +6,8 @@ public interface AccountDao extends BaseDao {
 
     Integer create(Account account);
 
+    Integer update(Account account);
+
     Account getAccountByUserId(Integer id);
 
     Account getAccountByAccountNumber(Long accountNumber);

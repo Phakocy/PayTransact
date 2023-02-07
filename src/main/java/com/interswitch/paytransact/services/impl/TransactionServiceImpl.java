@@ -1,5 +1,6 @@
 package com.interswitch.paytransact.services.impl;
 
+import com.interswitch.paytransact.daos.interfaces.AccountDao;
 import com.interswitch.paytransact.dtos.AccountDto;
 import com.interswitch.paytransact.dtos.PaymentDto;
 import com.interswitch.paytransact.entities.Account;
@@ -26,6 +27,9 @@ public class TransactionServiceImpl implements TransactionService {
     private static final String TOPIC = "Transaction_Topic";
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private AccountDao accountDao;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -61,13 +65,14 @@ public class TransactionServiceImpl implements TransactionService {
 
         senderAccount.setBalance(senderBalance - amount);
         recipientAccount.setBalance(recipientAccount.getBalance() + amount);
-        Account senderAccountResult = accountRepository.save(senderAccount);
-        accountRepository.save(recipientAccount);
 
-//        historyService.logAccountHistory(senderAccount, "you sent " + amount + " to " + recipientAccount.getAccountNumber());
-//        historyService.logAccountHistory(recipientAccount, senderAccount.getAccountNumber() + " just sent you " + amount);
+        Integer senderAccountResultID = accountDao.update(senderAccount);
+        accountDao.update(recipientAccount);
 
-        updateTransaction(transactionId, TransactionStatus.SUCCESS, senderAccountResult.getBalance());
+        historyService.logAccountHistory(senderAccount.getId(), "you sent " + amount + " to " + recipientAccount.getAccountNumber());
+        historyService.logAccountHistory(recipientAccount.getId(), senderAccount.getAccountNumber() + " just sent you " + amount);
+
+//        updateTransaction(transactionId, TransactionStatus.SUCCESS, senderAccountResult.getBalance());
     }
 
     Integer generateTransaction(Account account, Double balance, Double amount, TransactionStatus status, String narration) {

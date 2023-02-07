@@ -2,7 +2,6 @@ package com.interswitch.paytransact.daos.impl;
 
 import com.interswitch.paytransact.daos.interfaces.AccountDao;
 import com.interswitch.paytransact.entities.Account;
-import com.interswitch.paytransact.repos.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,14 +17,10 @@ import java.util.Map;
 public class AccountDaoImpl implements AccountDao {
     private SimpleJdbcCall
             create,
+            update,
             findByUserId,
             findByCardNumber,
             findByAccountNumber;
-    private final AccountRepository accountRepository;
-
-    public AccountDaoImpl(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
 
     @Autowired
     @Override
@@ -34,6 +29,8 @@ public class AccountDaoImpl implements AccountDao {
 
         create = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("insert_into_account_table");
+        update = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("update_into_account_table");
         findByUserId = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("find_account_by_user_id");
         findByCardNumber = new SimpleJdbcCall(jdbcTemplate)
@@ -55,6 +52,15 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
+    public Integer update(Account account) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("accountId", account.getId())
+                .addValue("balance", account.getBalance());
+
+        return (Integer) this.update.execute(in).get("account_id");
+    }
+
+    @Override
     public Account getAccountByUserId(Integer userid) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("userid", userid);
@@ -65,14 +71,14 @@ public class AccountDaoImpl implements AccountDao {
     public Account getAccountByAccountNumber(Long accountNumber) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("account_number", accountNumber);
-        return setAccountObject(this.findByUserId.execute(in));
+        return setAccountObject(this.findByAccountNumber.execute(in));
     }
 
     @Override
     public Account getAccountByCardNumber(Long cardNumber) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("card_number", cardNumber);
-        return setAccountObject(this.findByUserId.execute(in));
+        return setAccountObject(this.findByCardNumber.execute(in));
     }
 
     @Override
