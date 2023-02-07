@@ -7,6 +7,7 @@ import com.interswitch.paytransact.entities.User;
 import com.interswitch.paytransact.exceptions.MainExceptions;
 import com.interswitch.paytransact.exceptions.NotFoundException;
 import com.interswitch.paytransact.services.interfaces.AccountService;
+import com.interswitch.paytransact.services.interfaces.HistoryService;
 import com.interswitch.paytransact.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
     private UserService userService;
 
     @Autowired
-    private HistoryServiceImpl historyService;
+    private HistoryService historyService;
 
     @Override
     public Account getAccountByUserEmail(AccountDto accountDto) throws NotFoundException {
@@ -71,10 +72,10 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setDateCreated(new Date());
 
 //        save account with user and account details
-        accountDao.create(newAccount);
+        Integer accountId = accountDao.create(newAccount);
 
 //        log account creation into history table
-        historyService.logAccountHistory(newAccount.getId(), "new account created");
+        historyService.logAccountHistory(accountId, "new account created");
     }
 }
 

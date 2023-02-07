@@ -4,7 +4,7 @@ import com.interswitch.paytransact.entities.Account;
 
 public interface AccountDao extends BaseDao {
 
-    void create(Account account);
+    Integer create(Account account);
 
     Account getAccountByUserId(Integer id);
 

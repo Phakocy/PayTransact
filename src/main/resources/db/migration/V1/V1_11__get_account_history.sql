@@ -5,19 +5,14 @@ IF EXISTS(SELECT *
     DROP PROCEDURE get_account_history
 GO
 
-CREATE PROCEDURE [dbo].[get_account_history] @id INT OUTPUT,
-                                             @body FLOAT OUTPUT,
-                                             @account_id INT OUTPUT,
-                                             @date_created DATETIME OUTPUT
+CREATE PROCEDURE [dbo].[get_account_history] @accountId INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT id           = @id,
-           body         = @body,
-           account_id   = @account_id,
-           date_created = @date_created
+    SELECT *
     FROM [dbo].[account_history]
+    WHERE account_id = @accountId
 
 END
 GO

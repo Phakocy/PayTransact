@@ -9,7 +9,8 @@ CREATE PROCEDURE [dbo].[insert_into_account_table] @dateCreated DATETIME,
                                                    @balance FLOAT,
                                                    @cardNumber BIGINT,
                                                    @accountNumber BIGINT,
-                                                   @userId INT
+                                                   @userId INT,
+                                                   @account_id INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -26,6 +27,8 @@ BEGIN
             @cardNumber,
             @accountNumber,
             @userId)
+
+    SELECT @account_id = @@IDENTITY
 
 END
 GO

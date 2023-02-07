@@ -41,6 +41,10 @@ public class HistoryDaoImpl implements HistoryDao {
 
     @Override
     public List<History> getHistoryList(Account account) {
-        return null;
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("accountId", account.getId());
+        return (List<History>) this.getHistoryList
+                .execute(in)
+                .get("#result-set-1");
     }
 }

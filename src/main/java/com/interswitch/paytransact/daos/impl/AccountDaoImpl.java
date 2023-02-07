@@ -43,7 +43,7 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public void create(Account account) {
+    public Integer create(Account account) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("userId", account.getUser())
                 .addValue("balance", account.getBalance())
@@ -51,7 +51,7 @@ public class AccountDaoImpl implements AccountDao {
                 .addValue("accountNumber", account.getAccountNumber())
                 .addValue("dateCreated", account.getDateCreated());
 
-        this.create.execute(in);
+        return (Integer) this.create.execute(in).get("account_id");
     }
 
     @Override
