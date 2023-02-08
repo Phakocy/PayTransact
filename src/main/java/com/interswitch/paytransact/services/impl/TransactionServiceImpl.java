@@ -1,6 +1,7 @@
 package com.interswitch.paytransact.services.impl;
 
 import com.interswitch.paytransact.daos.interfaces.AccountDao;
+import com.interswitch.paytransact.daos.interfaces.TransactionDao;
 import com.interswitch.paytransact.dtos.AccountDto;
 import com.interswitch.paytransact.dtos.PaymentDto;
 import com.interswitch.paytransact.entities.Account;
@@ -8,8 +9,6 @@ import com.interswitch.paytransact.entities.Transaction;
 import com.interswitch.paytransact.entities.enums.TransactionStatus;
 import com.interswitch.paytransact.exceptions.MainExceptions;
 import com.interswitch.paytransact.exceptions.NotFoundException;
-import com.interswitch.paytransact.repos.AccountRepository;
-import com.interswitch.paytransact.repos.TransactionRepository;
 import com.interswitch.paytransact.services.interfaces.AccountService;
 import com.interswitch.paytransact.services.interfaces.HistoryService;
 import com.interswitch.paytransact.services.interfaces.TransactionService;
@@ -19,23 +18,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
     private static final String TOPIC = "Transaction_Topic";
-    @Autowired
-    private AccountRepository accountRepository;
 
     @Autowired
     private AccountDao accountDao;
     @Autowired
+    private TransactionDao transactionDao;
+    @Autowired
     private AccountService accountService;
     @Autowired
     private HistoryService historyService;
-    @Autowired
-    private TransactionRepository transactionRepository;
+
     @Autowired
     private KafkaTemplate<String, Transaction> kafkaTemplate;
 
@@ -52,11 +49,13 @@ public class TransactionServiceImpl implements TransactionService {
             throw new MainExceptions("can not transfer amounts less than 10.00");
         }
 
-        Account senderAccount = accountService.getAccountDetailsByCardNumber(cardNumber);
-        Account recipientAccount = accountService.getAccountDetailsByAccountNumber(accountNumber);
+        Account senderAccount = accountService
+                .getAccountDetailsByCardNumber(cardNumber);
+        Account recipientAccount = accountService
+                .getAccountDetailsByAccountNumber(accountNumber);
         Double senderBalance = senderAccount.getBalance();
 
-        Integer transactionId = generateTransaction(senderAccount, senderBalance, amount, TransactionStatus.PENDING, narration);
+        Integer transactionId = generateTransaction(senderAccount.getId(), senderBalance, amount, narration);
 
         if (amount > senderBalance) {
             updateTransaction(transactionId, TransactionStatus.DECLINED, senderBalance);
@@ -69,44 +68,47 @@ public class TransactionServiceImpl implements TransactionService {
         Integer senderAccountResultID = accountDao.update(senderAccount);
         accountDao.update(recipientAccount);
 
+        Account account = accountDao.getAccountById(senderAccountResultID);
+
+
         historyService.logAccountHistory(senderAccount.getId(), "you sent " + amount + " to " + recipientAccount.getAccountNumber());
         historyService.logAccountHistory(recipientAccount.getId(), senderAccount.getAccountNumber() + " just sent you " + amount);
 
-//        updateTransaction(transactionId, TransactionStatus.SUCCESS, senderAccountResult.getBalance());
+        updateTransaction(transactionId, TransactionStatus.SUCCESS, account.getBalance());
     }
 
-    Integer generateTransaction(Account account, Double balance, Double amount, TransactionStatus status, String narration) {
+    Integer generateTransaction(Integer accountId, Double balance, Double amount, String narration) {
         Transaction transaction = new Transaction();
-        transaction.setAccount(account);
+        transaction.setAccount(accountId);
         transaction.setBalance(balance);
         transaction.setAmount(amount);
-        transaction.setStatus(status);
+        transaction.setStatus(TransactionStatus.PENDING);
         transaction.setNarration(narration);
         transaction.setDateCreated(new Date());
 
-        Transaction transactionResult = transactionRepository.save(transaction);
-        return transactionResult.getId();
+        return transactionDao.create(transaction);
     }
 
-    Optional<Transaction> getTransactionByTransactionId(Integer transactionId) throws NotFoundException {
-        return Optional.ofNullable(transactionRepository.findTransactionById(transactionId).orElseThrow(() -> new NotFoundException("transaction not found with transaction id")));
+    Transaction getTransactionByTransactionId(Integer transactionId) throws NotFoundException {
+        Transaction transaction = transactionDao.findById(transactionId);
+        if (transaction == null) throw new NotFoundException("transaction not found with transaction id");
+        return transaction;
     }
 
     void updateTransaction(Integer transactionId, TransactionStatus status, Double balance) {
-        Optional<Transaction> transactionUpdate = getTransactionByTransactionId(transactionId);
-        transactionUpdate.ifPresent((Transaction transaction1) -> {
-            transaction1.setStatus(status);
-            transaction1.setBalance(balance);
-            //        SEND PAYMENT NOTIFICATION TO KAFKA
-            kafkaTemplate.send(TOPIC, transaction1);
+        Transaction transaction = getTransactionByTransactionId(transactionId);
+        transaction.setStatus(status);
+        transaction.setBalance(balance);
 
-            transactionRepository.save(transaction1);
-        });
+        //        SEND PAYMENT NOTIFICATION TO KAFKA
+        kafkaTemplate.send(TOPIC, transaction);
+
+        transactionDao.update(transaction);
     }
 
     @Override
-    public Optional<List<Transaction>> getTransactionListByAccount(AccountDto accountDto) throws NotFoundException {
+    public List<Transaction> getTransactionListByAccount(AccountDto accountDto) throws NotFoundException {
         Account account = accountService.getAccountByUserEmail(accountDto);
-        return Optional.ofNullable(transactionRepository.findTransactionsByAccountId(account.getId()).orElseThrow(() -> new NotFoundException("transaction list not found with this account")));
+        return transactionDao.findTransactionsByAccountId(account.getId());
     }
 }

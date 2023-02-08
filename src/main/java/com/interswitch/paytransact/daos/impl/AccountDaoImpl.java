@@ -18,6 +18,7 @@ public class AccountDaoImpl implements AccountDao {
     private SimpleJdbcCall
             create,
             update,
+            findById,
             findByUserId,
             findByCardNumber,
             findByAccountNumber;
@@ -31,6 +32,8 @@ public class AccountDaoImpl implements AccountDao {
                 .withProcedureName("insert_into_account_table");
         update = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("update_into_account_table");
+        findById = new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("find_account_by_account_id");
         findByUserId = new SimpleJdbcCall(jdbcTemplate)
                 .withProcedureName("find_account_by_user_id");
         findByCardNumber = new SimpleJdbcCall(jdbcTemplate)
@@ -61,9 +64,16 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public Account getAccountByUserId(Integer userid) {
+    public Account getAccountById(Integer accountId) {
         SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("userid", userid);
+                .addValue("accountId", accountId);
+        return setAccountObject(this.findById.execute(in));
+    }
+
+    @Override
+    public Account getAccountByUserId(Integer userId) {
+        SqlParameterSource in = new MapSqlParameterSource()
+                .addValue("userid", userId);
         return setAccountObject(this.findByUserId.execute(in));
     }
 

@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api")
@@ -27,7 +26,7 @@ public class TransactionController {
 
     @GetMapping("transactions")
     ResponseEntity<ApiResponse> getTransactions(@RequestBody AccountDto accountDto) {
-        Optional<List<Transaction>> transactionList = transactionService.getTransactionListByAccount(accountDto);
+        List<Transaction> transactionList = transactionService.getTransactionListByAccount(accountDto);
         return new ResponseEntity<>(new ApiResponse(transactionList, "fetched list of transactions successfully"), HttpStatus.OK);
     }
 }

@@ -8,11 +8,13 @@ public interface AccountDao extends BaseDao {
 
     Integer update(Account account);
 
-    Account getAccountByUserId(Integer id);
+    Account getAccountById(Integer accountId);
+
+    Account getAccountByUserId(Integer userId);
 
     Account getAccountByAccountNumber(Long accountNumber);
 
     Account getAccountByCardNumber(Long cardNumber);
 
-    boolean existsAccountByUserId(Integer id);
+    boolean existsAccountByUserId(Integer userid);
 }
