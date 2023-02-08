@@ -11,9 +11,9 @@ IF NOT EXISTS(
             date_created datetime,
 
             body         VARCHAR(250) NOT NULL,
-            account_id   INT          NOT NULL UNIQUE,
+            account_id   INT          NOT NULL,
 
-            CONSTRAINT FK_account_id_accounts FOREIGN KEY (account_id) REFERENCES dbo.accounts (id)
+            CONSTRAINT FK_account_id_accounts__001 FOREIGN KEY (account_id) REFERENCES dbo.accounts (id)
                 ON DELETE CASCADE
                 ON UPDATE CASCADE,
         )

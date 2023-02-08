@@ -2,6 +2,7 @@ package com.interswitch.paytransact.daos.impl;
 
 import com.interswitch.paytransact.daos.interfaces.TransactionDao;
 import com.interswitch.paytransact.entities.Transaction;
+import com.interswitch.paytransact.entities.enums.TransactionStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 
 import javax.sql.DataSource;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -61,8 +63,7 @@ public class TransactionDaoImpl implements TransactionDao {
     public Transaction findById(Integer transactionId) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("transactionId", transactionId);
-        Map<String, Object> out = this.findById.execute(in);
-        return null;
+        return setTransactionObject(this.findById.execute(in));
     }
 
     @Override
@@ -72,5 +73,18 @@ public class TransactionDaoImpl implements TransactionDao {
         return (List<Transaction>) this.findTransactionsByAccountId
                 .execute(in)
                 .get("#result-set-1");
+    }
+
+    private Transaction setTransactionObject(Map<String, Object> out) {
+        Transaction transaction = new Transaction();
+        transaction.setId((Integer) out.get("id"));
+        transaction.setAccount((Integer) out.get("account_id"));
+        transaction.setBalance((Double) out.get("balance"));
+        transaction.setAmount((Double) out.get("amount"));
+        transaction.setNarration((String) out.get("narration"));
+        transaction.setStatus((TransactionStatus) out.get("status"));
+        transaction.setDateCreated((Date) out.get("date_created"));
+
+        return transaction;
     }
 }

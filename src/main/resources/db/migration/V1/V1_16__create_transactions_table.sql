@@ -13,11 +13,11 @@ IF NOT EXISTS(
             amount       FLOAT        NOT NULL,
             balance      FLOAT        NOT NULL,
             narration    VARCHAR(MAX) NOT NULL,
-            status       VARCHAR(50) NOT NULL,
+            status       VARCHAR(50)  NOT NULL,
 
-            account_id   INT          NOT NULL UNIQUE,
+            account_id   INT          NOT NULL,
 
-            CONSTRAINT FK_account_id_accounts FOREIGN KEY (account_id) REFERENCES dbo.accounts (id)
+            CONSTRAINT FK_account_id_accounts__002 FOREIGN KEY (account_id) REFERENCES dbo.accounts (id)
                 ON DELETE CASCADE
                 ON UPDATE CASCADE,
         )
