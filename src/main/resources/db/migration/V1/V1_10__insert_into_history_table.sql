@@ -5,9 +5,10 @@ IF EXISTS(SELECT *
     DROP PROCEDURE insert_into_history_table
 GO
 
-CREATE PROCEDURE [dbo].[insert_into_history_table] @account_id INT,
-                                                   @body VARCHAR(250),
-                                                   @date_created DATETIME
+CREATE PROCEDURE
+    [dbo].[insert_into_history_table] @account_id INT,
+                                      @body VARCHAR(250),
+                                      @date_created DATETIME
 AS
 BEGIN
     SET NOCOUNT ON;

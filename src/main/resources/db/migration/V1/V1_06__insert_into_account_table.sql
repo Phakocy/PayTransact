@@ -5,12 +5,13 @@ IF EXISTS(SELECT *
     DROP PROCEDURE insert_into_account_table
 GO
 
-CREATE PROCEDURE [dbo].[insert_into_account_table] @dateCreated DATETIME,
-                                                   @balance FLOAT,
-                                                   @cardNumber BIGINT,
-                                                   @accountNumber BIGINT,
-                                                   @userId INT,
-                                                   @account_id INT OUTPUT
+CREATE PROCEDURE
+    [dbo].[insert_into_account_table] @dateCreated DATETIME,
+                                      @balance FLOAT,
+                                      @cardNumber BIGINT,
+                                      @accountNumber BIGINT,
+                                      @userId INT,
+                                      @account_id INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;

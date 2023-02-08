@@ -5,10 +5,11 @@ IF NOT EXISTS(
           AND type IN (N'U')
     )
     BEGIN
-        CREATE TABLE [paytransact].[dbo].[account_history]
+        CREATE TABLE
+            [paytransact].[dbo].[account_history]
         (
             id           INT PRIMARY KEY IDENTITY (101, 1),
-            date_created datetime,
+            date_created DATETIME,
 
             body         VARCHAR(250) NOT NULL,
             account_id   INT          NOT NULL,

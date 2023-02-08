@@ -5,9 +5,10 @@ IF EXISTS(SELECT *
     DROP PROCEDURE update_into_transaction_table
 GO
 
-CREATE PROCEDURE [dbo].[update_into_transaction_table] @transaction_id INT,
-                                                       @balance FLOAT,
-                                                       @status VARCHAR(50)
+CREATE PROCEDURE
+    [dbo].[update_into_transaction_table] @transaction_id INT,
+                                          @balance FLOAT,
+                                          @status VARCHAR(50)
 AS
 BEGIN
     SET NOCOUNT ON;

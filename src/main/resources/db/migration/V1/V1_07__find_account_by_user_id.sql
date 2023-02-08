@@ -5,13 +5,14 @@ IF EXISTS(SELECT *
     DROP PROCEDURE find_account_by_user_id
 GO
 
-CREATE PROCEDURE [dbo].[find_account_by_user_id] @userid INT,
-                                                 @id INT OUTPUT,
-                                                 @balance FLOAT OUTPUT ,
-                                                 @cardNumber BIGINT OUTPUT,
-                                                 @accountNumber BIGINT OUTPUT,
-                                                 @user_Id INT OUTPUT,
-                                                 @date_created DATETIME OUTPUT
+CREATE PROCEDURE
+    [dbo].[find_account_by_user_id] @userid INT,
+                                    @id INT OUTPUT,
+                                    @balance FLOAT OUTPUT,
+                                    @cardNumber BIGINT OUTPUT,
+                                    @accountNumber BIGINT OUTPUT,
+                                    @user_Id INT OUTPUT,
+                                    @date_created DATETIME OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;

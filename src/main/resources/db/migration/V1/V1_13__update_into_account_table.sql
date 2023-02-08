@@ -5,9 +5,10 @@ IF EXISTS(SELECT *
     DROP PROCEDURE update_into_account_table
 GO
 
-CREATE PROCEDURE [dbo].[update_into_account_table] @accountId INT,
-                                                   @balance FLOAT,
-                                                   @account_id INT OUTPUT
+CREATE PROCEDURE
+    [dbo].[update_into_account_table] @accountId INT,
+                                      @balance FLOAT,
+                                      @account_id INT OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;

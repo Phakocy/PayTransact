@@ -5,11 +5,12 @@ IF NOT EXISTS(
           AND type IN (N'U')
     )
     BEGIN
-        CREATE TABLE [paytransact].[dbo].[users]
+        CREATE TABLE
+            [paytransact].[dbo].[users]
         (
-            id           int PRIMARY KEY IDENTITY (101, 1),
-            email        varchar(100) NOT NULL UNIQUE,
-            password     varchar(50)  NOT NULL,
-            date_created datetime,
+            id           INT PRIMARY KEY IDENTITY (101, 1),
+            email        VARCHAR(100) NOT NULL UNIQUE,
+            password     VARCHAR(50)  NOT NULL,
+            date_created DATETIME,
         )
     END

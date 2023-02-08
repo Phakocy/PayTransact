@@ -5,14 +5,15 @@ IF EXISTS(SELECT *
     DROP PROCEDURE find_transaction_by_transaction_id
 GO
 
-CREATE PROCEDURE [dbo].[find_transaction_by_transaction_id] @transactionId INT,
-                                                            @id INT OUTPUT,
-                                                            @account_id INT OUTPUT,
-                                                            @balance FLOAT OUTPUT,
-                                                            @amount FLOAT OUTPUT,
-                                                            @narration VARCHAR(MAX) OUTPUT,
-                                                            @status VARCHAR(MAX) OUTPUT,
-                                                            @date_created DATETIME OUTPUT
+CREATE PROCEDURE
+    [dbo].[find_transaction_by_transaction_id] @transactionId INT,
+                                               @id INT OUTPUT,
+                                               @account_id INT OUTPUT,
+                                               @balance FLOAT OUTPUT,
+                                               @amount FLOAT OUTPUT,
+                                               @narration VARCHAR(MAX) OUTPUT,
+                                               @status VARCHAR(MAX) OUTPUT,
+                                               @date_created DATETIME OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;

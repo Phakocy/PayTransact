@@ -5,10 +5,11 @@ IF EXISTS(SELECT *
     DROP PROCEDURE find_user_by_email
 GO
 
-CREATE PROCEDURE [dbo].[find_user_by_email] @_email VARCHAR(200),
-                                            @id INT OUTPUT,
-                                            @email VARCHAR(200) OUTPUT,
-                                            @date_created DATETIME OUTPUT
+CREATE PROCEDURE
+    [dbo].[find_user_by_email] @_email VARCHAR(200),
+                               @id INT OUTPUT,
+                               @email VARCHAR(200) OUTPUT,
+                               @date_created DATETIME OUTPUT
 AS
 BEGIN
     SET NOCOUNT ON;

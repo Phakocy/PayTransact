@@ -5,13 +5,14 @@ IF EXISTS(SELECT *
     DROP PROCEDURE insert_into_transaction_table
 GO
 
-CREATE PROCEDURE [dbo].[insert_into_transaction_table] @transaction_id INT OUTPUT,
-                                                       @amount FLOAT,
-                                                       @balance FLOAT,
-                                                       @narration VARCHAR(250),
-                                                       @status VARCHAR(50),
-                                                       @account_id INT,
-                                                       @date_created DATETIME
+CREATE PROCEDURE
+    [dbo].[insert_into_transaction_table] @transaction_id INT OUTPUT,
+                                          @amount FLOAT,
+                                          @balance FLOAT,
+                                          @narration VARCHAR(250),
+                                          @status VARCHAR(50),
+                                          @account_id INT,
+                                          @date_created DATETIME
 AS
 BEGIN
     SET NOCOUNT ON;

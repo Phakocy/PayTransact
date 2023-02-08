@@ -5,7 +5,8 @@ IF EXISTS(SELECT *
     DROP PROCEDURE find_transactions_by_account_id
 GO
 
-CREATE PROCEDURE [dbo].[find_transactions_by_account_id] @account_id INT
+CREATE PROCEDURE
+    [dbo].[find_transactions_by_account_id] @account_id INT
 AS
 BEGIN
     SET NOCOUNT ON;

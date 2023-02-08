@@ -5,7 +5,8 @@ IF EXISTS(SELECT *
     DROP PROCEDURE get_account_history
 GO
 
-CREATE PROCEDURE [dbo].[get_account_history] @accountId INT
+CREATE PROCEDURE
+    [dbo].[get_account_history] @accountId INT
 AS
 BEGIN
     SET NOCOUNT ON;

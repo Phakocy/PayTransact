@@ -55,12 +55,12 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    public Integer update(Account account) {
+    public void update(Account account) {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("accountId", account.getId())
                 .addValue("balance", account.getBalance());
 
-        return (Integer) this.update.execute(in).get("account_id");
+        this.update.execute(in).get("account_id");
     }
 
     @Override
