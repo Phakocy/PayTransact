@@ -15,10 +15,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
+    private final AccountService accountService;
+    private final HistoryService historyService;
+
     @Autowired
-    private AccountService accountService;
-    @Autowired
-    private HistoryService historyService;
+    public AccountController(AccountService accountService, HistoryService historyService) {
+        this.accountService = accountService;
+        this.historyService = historyService;
+    }
 
     @GetMapping("")
     ResponseEntity<ApiResponse> getAccount(@RequestBody AccountDto accountDto) {

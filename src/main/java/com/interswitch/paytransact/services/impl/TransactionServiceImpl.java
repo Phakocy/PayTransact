@@ -24,17 +24,22 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
     private static final String TOPIC = "Transaction_Topic";
 
-    @Autowired
-    private AccountDao accountDao;
-    @Autowired
-    private TransactionDao transactionDao;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private HistoryService historyService;
+
+    private final AccountDao accountDao;
+    private final TransactionDao transactionDao;
+    private final AccountService accountService;
+    private final HistoryService historyService;
+
+    private KafkaTemplate<String, Transaction> kafkaTemplate;
 
     @Autowired
-    private KafkaTemplate<String, Transaction> kafkaTemplate;
+    public TransactionServiceImpl(AccountDao accountDao, TransactionDao transactionDao, AccountService accountService, HistoryService historyService, KafkaTemplate<String, Transaction> kafkaTemplate) {
+        this.accountDao = accountDao;
+        this.transactionDao = transactionDao;
+        this.accountService = accountService;
+        this.historyService = historyService;
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     @Override
     public void processTransaction(PaymentDto paymentDto) throws MainExceptions {

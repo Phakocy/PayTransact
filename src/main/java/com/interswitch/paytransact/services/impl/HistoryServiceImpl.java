@@ -16,14 +16,18 @@ import java.util.List;
 
 @Service
 public class HistoryServiceImpl implements HistoryService {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final HistoryDao historyDao;
+
+    private final AccountDao accountDao;
 
     @Autowired
-    private HistoryDao historyDao;
-
-    @Autowired
-    private AccountDao accountDao;
+    public HistoryServiceImpl(UserService userService, HistoryDao historyDao, AccountDao accountDao) {
+        this.userService = userService;
+        this.historyDao = historyDao;
+        this.accountDao = accountDao;
+    }
 
     @Override
     public void logAccountHistory(Integer account, String body) {

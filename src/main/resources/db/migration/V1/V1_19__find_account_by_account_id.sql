@@ -24,7 +24,8 @@ BEGIN
            @accountNumber = account_number,
            @user_id = user_id
 
-    FROM [dbo].[accounts] (NOLOCK)
+    FROM [dbo].[accounts]
+             WITH (NOLOCK)
     WHERE id = @accountId
 
 END

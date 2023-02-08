@@ -13,7 +13,8 @@ BEGIN
 
     SELECT *
 
-    FROM [dbo].[transactions] (NOLOCK)
+    FROM [dbo].[transactions]
+             WITH (NOLOCK)
 
     WHERE account_id = @account_id
 

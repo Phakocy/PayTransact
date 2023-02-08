@@ -26,7 +26,8 @@ BEGIN
            @status = status,
            @date_created = date_created
 
-    FROM [dbo].[transactions] (NOLOCK)
+    FROM [dbo].[transactions]
+             WITH (NOLOCK)
     WHERE id = @transactionId
 
 END

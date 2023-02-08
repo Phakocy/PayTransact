@@ -24,7 +24,8 @@ BEGIN
            @user_Id = user_id,
            @date_created = date_created
 
-    FROM [dbo].[accounts] (NOLOCK)
+    FROM [dbo].[accounts]
+             WITH (NOLOCK)
     WHERE card_number = @card_number
 
 END

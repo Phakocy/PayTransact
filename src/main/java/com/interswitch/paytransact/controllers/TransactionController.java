@@ -15,8 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api")
 public class TransactionController {
+    private final TransactionService transactionService;
+
     @Autowired
-    private TransactionService transactionService;
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
 
     @PostMapping("transfer")
     ResponseEntity<ApiResponse> processTransaction(@RequestBody PaymentDto paymentDto) {

@@ -14,8 +14,11 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT @id = id, @email = email, @date_created = date_created
-    FROM [dbo].[users] (NOLOCK)
+    SELECT @id = id,
+           @email = email,
+           @date_created = date_created
+    FROM [dbo].[users]
+             WITH (NOLOCK)
     WHERE email = @_email
 
 END

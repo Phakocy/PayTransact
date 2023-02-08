@@ -10,18 +10,21 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
 @Component
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    private final UserDao userDao;
 
     @Autowired
-    private UserDao userDao;
+    public UserServiceImpl(ModelMapper modelMapper, UserDao userDao) {
+        this.modelMapper = modelMapper;
+        this.userDao = userDao;
+    }
 
     @Override
     public User getUser(Integer id) throws NotFoundException {
@@ -43,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(SignupDto signUpDto) throws MainExceptions {
-        if (StringUtils.isEmpty(signUpDto.getEmail()) || StringUtils.isEmpty(signUpDto.getPassword())) {
+        if (signUpDto.getEmail().isEmpty() || signUpDto.getPassword().isEmpty()) {
             throw new MainExceptions("email and password are required");
         } else if (userDao.existsByEmail(signUpDto.getEmail())) {
             throw new MainExceptions("account with email: " + signUpDto.getEmail() + " exists");

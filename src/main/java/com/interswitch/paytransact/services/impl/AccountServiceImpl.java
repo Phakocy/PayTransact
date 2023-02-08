@@ -19,14 +19,18 @@ import java.util.Random;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    @Autowired
-    private AccountDao accountDao;
+    private final AccountDao accountDao;
+
+    private final UserService userService;
+
+    private final HistoryService historyService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private HistoryService historyService;
+    public AccountServiceImpl(AccountDao accountDao, UserService userService, HistoryService historyService) {
+        this.accountDao = accountDao;
+        this.userService = userService;
+        this.historyService = historyService;
+    }
 
     @Override
     public Account getAccountByUserEmail(AccountDto accountDto) throws NotFoundException {
