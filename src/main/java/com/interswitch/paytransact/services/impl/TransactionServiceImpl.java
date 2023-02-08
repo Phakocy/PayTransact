@@ -65,10 +65,10 @@ public class TransactionServiceImpl implements TransactionService {
         senderAccount.setBalance(senderBalance - amount);
         recipientAccount.setBalance(recipientAccount.getBalance() + amount);
 
-        Integer senderAccountResultID = accountDao.update(senderAccount);
+        accountDao.update(senderAccount);
         accountDao.update(recipientAccount);
 
-        Account account = accountDao.getAccountById(senderAccountResultID);
+        Account account = accountDao.getAccountById(senderAccount.getId());
 
         historyService.logAccountHistory(senderAccount.getId(), "you sent " + amount + " to " + recipientAccount.getAccountNumber());
         historyService.logAccountHistory(recipientAccount.getId(), senderAccount.getAccountNumber() + " just sent you " + amount);
@@ -90,7 +90,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     Transaction getTransactionByTransactionId(Integer transactionId) throws NotFoundException {
         Transaction transaction = transactionDao.findById(transactionId);
-        System.out.println("value of transaction account=================>>>" + transaction);
         if (transaction == null) throw new NotFoundException("transaction not found with transaction id");
         return transaction;
     }

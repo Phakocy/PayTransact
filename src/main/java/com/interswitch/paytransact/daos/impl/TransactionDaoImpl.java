@@ -54,7 +54,7 @@ public class TransactionDaoImpl implements TransactionDao {
         SqlParameterSource in = new MapSqlParameterSource()
                 .addValue("transaction_id", transaction.getId())
                 .addValue("balance", transaction.getBalance())
-                .addValue("status", transaction.getBalance());
+                .addValue("status", transaction.getStatus());
 
         this.update.execute(in);
     }
@@ -82,7 +82,7 @@ public class TransactionDaoImpl implements TransactionDao {
         transaction.setBalance((Double) out.get("balance"));
         transaction.setAmount((Double) out.get("amount"));
         transaction.setNarration((String) out.get("narration"));
-        transaction.setStatus((TransactionStatus) out.get("status"));
+        transaction.setStatus(TransactionStatus.valueOf((String) out.get("status")));
         transaction.setDateCreated((Date) out.get("date_created"));
 
         return transaction;
